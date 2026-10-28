@@ -1,0 +1,47 @@
+# Parcours de bout en bout : connexion → création → liste → priorité → actualisation.
+# Contre une API de TEST uniquement (données fictives).
+#   maestro test -e EMAIL=agent@doztra.test -e PASSWORD=... .maestro
+appId: com.doztra.demandes
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Connexion"
+- tapOn:
+    id: "login-email"
+- inputText: ${EMAIL}
+- tapOn:
+    id: "login-password"
+- inputText: ${PASSWORD}
+- tapOn: "Se connecter"
+- assertVisible: "Demandes clients"
+
+# Création (R01) — le succès n'est affiché qu'après confirmation du serveur
+- tapOn: "Ajouter une demande"
+- assertVisible: "Nouvelle demande"
+- tapOn:
+    id: "field-customerName"
+- inputText: "Client Maestro"
+- tapOn:
+    id: "field-subject"
+- inputText: "Test de bout en bout"
+- tapOn:
+    id: "field-description"
+- inputText: "Demande créée automatiquement par Maestro."
+- hideKeyboard
+- tapOn:
+    id: "submit"
+- assertVisible: "Demande enregistrée"
+- assertVisible: "L’enregistrement a bien été effectué."
+- tapOn: "Retour à la liste"
+- assertVisible: "Client Maestro"
+
+# Priorité (R09) puis retrait (R10)
+- tapOn: "Marquer comme prioritaire — Client Maestro"
+- assertVisible: "Demande marquée comme prioritaire"
+- tapOn: "Retirer la priorité — Client Maestro"
+- assertVisible: "Priorité retirée"
+
+# Actualisation (R17)
+- swipe:
+    direction: DOWN
+- assertVisible: "Registre des demandes"
